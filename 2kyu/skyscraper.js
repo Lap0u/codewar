@@ -113,17 +113,21 @@ const GRID_SIZE = 6
     
 // }
 
+function removePoss(list, remove) {
+  ind = list.indexOf(remove)
+  if (ind !== -1)
+    list.splice(ind, 1)
+  if (list.length === 1)
+    list = list[0]
+}
+
 function updatePossibilites(ans, i, j, remove) {
   for (k = 0; k < 6; k++) {
-    if (Array.isArray(ans[i][k])) { 
-      ind = ans[i][k].indexOf(remove)
-      if (ind !== -1)
-        ans[i][k].splice(ind, 1)
+    if (Array.isArray(ans[i][k])) {
+      removePoss(ans[i][k], remove)
     }
     if (Array.isArray(ans[k][j])) {
-      ind = ans[k][j].indexOf(remove)
-      if (ind !== -1)
-        ans[k][j].splice(ind, 1)
+      removePoss(ans[k][j], remove)
     }
   }
 }
@@ -204,8 +208,35 @@ function fillWithArrays(ans, clues) {
   dispArr(ans)
 }
 
-function fillingClues(ans, clues) {
+function handleTwo(ans, i) {
+  
+}
 
+function handleThree(ans, i) {
+  
+}
+
+function handleFour(ans, i) {
+  
+}
+
+function handleFive(ans, i) {
+  if (i < 6) {
+    removePoss()
+  }
+}
+
+function fillingClues(ans, clues) {
+  for (i = 0; i < fillingClues; i++) {
+    if (clues[i] === 2)
+      handleTwo(ans, i)
+    else if (clues[i] === 3)
+      handleThree(ans, i)
+    else if (clues[i] === 4)
+      handleFour(ans, i)
+    else if (clues[i] === 5)
+      handleFive(ans, i)
+  }
 }
 
 function solvePuzzle(clues) {
