@@ -121,6 +121,11 @@ function removePoss(list, remove) {
     list = list[0]
 }
 
+function removeRangePoss(list, range) {
+  for (j = 0; j < range.length; j++)
+    removePoss(list, range[j])
+}
+
 function updatePossibilites(ans, i, j, remove) {
   for (k = 0; k < 6; k++) {
     if (Array.isArray(ans[i][k])) {
@@ -209,25 +214,95 @@ function fillWithArrays(ans, clues) {
 }
 
 function handleTwo(ans, i) {
-  
+  console.log('two', i)
+  if (i < 6) {
+    removeRangePoss(ans[0][i], [6])
+  }
+  else if (i < 12) {
+    removeRangePoss(ans[i - 6][5], [6])
+  }
+  else if (i < 18) {
+    removeRangePoss(ans[5][17 - i], [6])
+  }
+  else if (i < 24) {
+    removeRangePoss(ans[23 - i][0], [6])
+  }
 }
 
 function handleThree(ans, i) {
-  
+  console.log('three', i)
+  if (i < 6) {
+    removeRangePoss(ans[0][i], [5, 6])
+    removeRangePoss(ans[1][i], [6])
+  }
+  else if (i < 12) {
+    removeRangePoss(ans[i - 6][5], [5, 6])
+    removeRangePoss(ans[i - 6][4], [6])
+  }
+  else if (i < 18) {
+    removeRangePoss(ans[5][17 - i], [5, 6])
+    removeRangePoss(ans[4][17 - i], [6])
+  }
+  else if (i < 24) {
+    removeRangePoss(ans[23 - i][0], [5, 6])
+    removeRangePoss(ans[23 - i][1], [6])
+  }
 }
 
 function handleFour(ans, i) {
-  
+  console.log('four', i)
+  if (i < 6) {
+    removeRangePoss(ans[0][i], [4, 5, 6])
+    removeRangePoss(ans[1][i], [5, 6])
+    removeRangePoss(ans[2][i], [6])
+  }
+  else if (i < 12) {
+    removeRangePoss(ans[i - 6][5], [4, 5, 6])
+    removeRangePoss(ans[i - 6][4], [5, 6])
+    removeRangePoss(ans[i - 6][3], [6])
+  }
+  else if (i < 18) {
+    removeRangePoss(ans[5][17 - i], [4, 5, 6])
+    removeRangePoss(ans[4][17 - i], [5, 6])
+    removeRangePoss(ans[3][17 - i], [6])
+  }
+  else if (i < 24) {
+    removeRangePoss(ans[23 - i][0], [4, 5, 6])
+    removeRangePoss(ans[23 - i][1], [5, 6])
+    removeRangePoss(ans[23 - i][2], [6])
+  }
 }
 
 function handleFive(ans, i) {
+  console.log('five', i)
   if (i < 6) {
-    removePoss()
+    removeRangePoss(ans[0][i], [3, 4, 5, 6])
+    removeRangePoss(ans[1][i], [4, 5, 6])
+    removeRangePoss(ans[2][i], [5, 6])
+    removeRangePoss(ans[3][i], [6])
+  }
+  else if (i < 12) {
+    removeRangePoss(ans[i - 6][5], [3, 4, 5, 6])
+    removeRangePoss(ans[i - 6][4], [4, 5, 6])
+    removeRangePoss(ans[i - 6][3], [5, 6])
+    removeRangePoss(ans[i - 6][2], [6])
+  }
+  else if (i < 18) {
+    removeRangePoss(ans[5][17 - i], [3, 4, 5, 6])
+    removeRangePoss(ans[4][17 - i], [4, 5, 6])
+    removeRangePoss(ans[3][17 - i], [5, 6])
+    removeRangePoss(ans[2][17 - i], [6])
+  }
+  else if (i < 24) {
+    removeRangePoss(ans[23 - i][0], [3, 4, 5, 6])
+    removeRangePoss(ans[23 - i][1], [4, 5, 6])
+    removeRangePoss(ans[23 - i][2], [5, 6])
+    removeRangePoss(ans[23 - i][3], [6])
   }
 }
 
 function fillingClues(ans, clues) {
-  for (i = 0; i < fillingClues; i++) {
+  for (i = 0; i < clues.length; i++) {
     if (clues[i] === 2)
       handleTwo(ans, i)
     else if (clues[i] === 3)
@@ -239,6 +314,67 @@ function fillingClues(ans, clues) {
   }
 }
 
+function findHorIndex(elem, line) {
+  for (i = 0; i < line.length; i++) {
+    if (Array.isArray(line[i])) {
+      if (line[i].indexOf(elem) !== -1)
+        return i
+    }
+  }
+}
+
+function checkHorizontalOnlyOneSpot(line) {
+  count = [0, 0, 0, 0, 0, 0, 0]
+  for(i = 0; i < GRID_SIZE; i++) {
+    for (j = 0; j < line[i].length; j++)
+      count[line[i][j]]++
+  }
+  for (k = 0; k < count.length; k++) {
+    if (count[k] === 1) {
+      var jIndex = findHorIndex(k, line)
+      line[jIndex] = k
+    }
+  }
+}
+
+function findVerIndex(arr, index, tofind) {
+  for (k = 0; k < GRID_SIZE; k++) {
+    if (Array.isArray(arr[k][index])) {
+      if (arr[k][index].indexOf(tofind) !== -1)
+        return k
+    }
+  }
+}
+
+function checkVerticalOnlyOneSpot(arr, index) {
+  count = [0, 0, 0, 0, 0, 0, 0]
+  for (i = 0; i < GRID_SIZE; i++) {
+    for(j = 0; j < arr[i][index].length; j++) {
+      count[arr[i][index][j]]++
+    }
+  }
+  for(i = 0; i < count.length; i++) {
+    if (count[i] === 1) {
+      var jIndex = findVerIndex(arr, index, i)
+      arr[jIndex][index] = i 
+    }
+  }
+}
+
+function updateAllPossibilities(ans) {
+  //doit update chaque ligne et colonne en fonction des nombres deja presents
+}
+
+function checkOnlyOneSpot(ans) {
+  console.log('1');
+  dispArr(ans)
+  for (x = 0; x < GRID_SIZE; x++) {
+    checkHorizontalOnlyOneSpot(ans[x])
+    checkVerticalOnlyOneSpot(ans, x)
+  }
+  updateAllPossibilities(ans)
+}
+
 function solvePuzzle(clues) {
   ans = [[ 0, 0, 0, 0, 0, 0],
         [ 0, 0, 0, 0, 0, 0],
@@ -248,6 +384,13 @@ function solvePuzzle(clues) {
         [ 0, 0, 0, 0, 0, 0]]
   fillWithArrays(ans, clues)
   fillingClues(ans, clues)
+  checkOnlyOneSpot(ans)
+  checkOnlyOneSpot(ans)
+  checkOnlyOneSpot(ans)
+  checkOnlyOneSpot(ans)
+  checkOnlyOneSpot(ans)
+  console.log('last')
+  dispArr(ans)
   // checkValid(ans, clues)
   return ans
 }
