@@ -1,3 +1,7 @@
+function updateDistance(Point, maze) {
+  Point.toEnd = maze.length - Point.x + maze[0].length - Point.y
+}
+
 class Point {
   constructor(x, y) {
   this.x = x
@@ -9,10 +13,13 @@ class Point {
   this.parent = undefined
   }
 
+  updateDistance(maze) {
+    this.toEnd = maze.length - 1 - this.x + maze[0].length - 1 - this.y
+  }
+
   addNeighbours(allPoints) {
     let currI = this.x
     let currJ = this.y
-    console.log('cur', currI, currJ)
     if (currI > 0)
       this.neighbours.push(allPoints[currI- 1][currJ])
     if (currJ > 0)
@@ -28,18 +35,22 @@ function initAllPoints(maze) {
   res = new Array(maze.length)
   for (i = 0; i < maze.length; i++) {
     res[i] = new Array(maze[i].length)
-    for (j = 0; j < res[i].length; j++)
+    for (j = 0; j < res[i].length; j++) {
       res[i][j] = new Point(i, j)
+    }
+  }
+  for (i = 0; i < maze.length; i++) {
+    for (j = 0; j < res[i].length; j++) {
+      res[i][j].addNeighbours(res)
+      res[i][j].updateDistance(maze)
+    }
   }
   return res
 }
 
 function pathFinder(maze){
   maze = maze.split('\n')
-  var allPoints = initAllPoints(maze)
-  
-  allPoints[0][0].addNeighbours(allPoints)
-
+  let allPoints = initAllPoints(maze)
   return true;
 }
 
