@@ -8,21 +8,25 @@ class Point {
   this.neighbours = []
   this.parent = undefined
   }
-}
 
-function getMazeLen(maze) {
-  x = 0;
-  while (maze[x] !== undefined){
-    x++
+  addNeighbours(allPoints) {
+    let currI = this.x
+    let currJ = this.y
+    console.log('cur', currI, currJ)
+    if (currI > 0)
+      this.neighbours.push(allPoints[currI- 1][currJ])
+    if (currJ > 0)
+      this.neighbours.push(allPoints[currI][currJ - 1])
+    if (currI + 1 < allPoints.length)
+      this.neighbours.push(allPoints[currI+ 1][currJ])
+    if (currJ + 1 < allPoints[currI].length)
+      this.neighbours.push(allPoints[currI][currJ + 1])
   }
-  return x
 }
 
 function initAllPoints(maze) {
-  mazeLen = getMazeLen(maze)
-  console.log(';en', mazeLen)
-  res = new Array(mazeLen)
-  for (i = 0; i < mazeLen; i++) {
+  res = new Array(maze.length)
+  for (i = 0; i < maze.length; i++) {
     res[i] = new Array(maze[i].length)
     for (j = 0; j < res[i].length; j++)
       res[i][j] = new Point(i, j)
@@ -33,8 +37,9 @@ function initAllPoints(maze) {
 function pathFinder(maze){
   maze = maze.split('\n')
   var allPoints = initAllPoints(maze)
-  console.log(allPoints)
-  console.log(maze)
+  
+  allPoints[0][0].addNeighbours(allPoints)
+
   return true;
 }
 
